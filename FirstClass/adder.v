@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
-// Engineer: Vipin
+// Engineer: Marzhan
 // 
 // Create Date: 02/19/2018 05:11:19 PM
 // Design Name: 
