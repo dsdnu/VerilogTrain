@@ -1,3 +1,10 @@
+//Binary coded decimal
+//BCD addition
+
+//1001 1011
+//     0110
+//auxilliary carry
+
 module fourBitAdder(
 // Git changes
 input [3:0] a,

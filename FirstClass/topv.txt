@@ -1,0 +1,8 @@
+module top(
+    input [3:0] input1,
+    input [3:0] input2,
+    output [7:0] bcdOutput
+    );
+    
+    endmodule
+    
