@@ -1,6 +1,6 @@
 `timescale 1ns/1ps
 
-`define period 5
+`define period 10
 `define Width 4
 
 module multTb();
@@ -29,21 +29,23 @@ begin
      begin
         rst <= 1;
         En <= 0;
-        multiplicant = $urandom()%16;
-     	multiplier = $urandom()%16;
-        myproduct = multiplicant*multiplier;
-     	#100;
+        @(posedge clk)
+        #2 multiplicant = $urandom()%16;
+     	#2 multiplier = $urandom()%16;
+        #2 myproduct = multiplicant*multiplier;
+     	#1000;
      	rst <= 0;
-     	#100;
+     	#1000;
      	@(posedge clk);
-     	En <= 1;
+     	#2 En <= 1;
      	@(posedge clk);
-     	En <= 0;
+     	#2 En <= 0;
      	wait(done);
      	if(product == multiplicant*multiplier)
         	$display("Simulation passed Multiplicant: %d, Multiplier: %d,Expected value %d and received value %d",multiplicant,multiplier,myproduct,product);
      	else
         	 $display($time,,,"Simulation failed. Multiplicant: %d, Multiplier: %d,Expected value %d and received value %d",multiplicant,multiplier,myproduct,product);
+        wait(!done);
       end
      $stop;
 end
