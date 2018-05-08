@@ -12,24 +12,39 @@ reg [3:0] MultiplicantReg;
 wire [3:0] loadValAreg;
 wire [3:0] OutputAreg;
 wire [3:0] OutputMultreg;
+reg carry;
 wire carryOut;
+wire shift;
+wire load;
 
 assign product = {OutputAreg,OutputMultreg};
 
 always @(posedge clk)
 begin
-    if(Enable)
+    if(reset)
+        MultiplicantReg <= 0;
+    else if(Enable)
 	MultiplicantReg <= multiplicant;
+end
+
+always @(posedge clk)
+begin
+     if(reset)
+         carry <= 0;
+     else if(load)
+         carry <= carryOut;
+     else
+         carry <= 0;
 end
 
 shift4Reg #(.Width(4)) AReg(
 .clock(clk),
 .reset(reset),
-.load(), //if high, load loadValue to register. if low dont load
+.load(load), //if high, load loadValue to register. if low dont load
 .loadValue(loadValAreg),
-.shift(), //If high shift right by one bit. else don't shift
+.shift(shift), //If high shift right by one bit. else don't shift
 .shiftReg(OutputAreg),
-.shiftIn(carryOut)////////////////////////////
+.shiftIn(carry)
 );
 
 
@@ -38,7 +53,7 @@ shift4Reg #(.Width(4)) Multiplier(
 .reset(reset),
 .load(Enable), //if high, load loadValue to register. if low dont load
 .loadValue(multiplier),
-.shift(), //If high shift right by one bit. else don't shift
+.shift(shift), //If high shift right by one bit. else don't shift
 .shiftReg(OutputMultreg),
 .shiftIn(OutputAreg[0])
 );
@@ -49,6 +64,17 @@ adder adder(
   .b(OutputAreg),
   .sum(loadValAreg),
   .carry(carryOut)
+);
+
+
+controlLogic cl(
+.clk(clk),
+.Rst(reset),
+.En(Enable),
+.qin(OutputMultreg[0]),
+.done(done),
+.shift(shift),
+.load(load)
 );
 
 endmodule
